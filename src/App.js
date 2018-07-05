@@ -1,11 +1,25 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+
+const menuStyle = {
+  paddingLeft: 50,
+  paddingTop: 10,
+  paddingBottom: 10,
+  backgroundColor: '#85e0e0',
+}
+
+const activeItemStyle = {
+  backgroundColor: '#c2f0f0',
+  padding: 10,
+  paddingBottom: 11
+}
 
 const Menu = () => (
-  <div>    
-    <Link to="/">anecdotes</Link>|
-    <Link to="/new">add new</Link>|
-    <Link to="/about">about</Link>
+  <div  style={menuStyle}>    
+    <NavLink activeStyle={activeItemStyle} exact to="/">anecdotes</NavLink>|
+    <NavLink activeStyle={activeItemStyle} to="/new">add new</NavLink>|
+    <NavLink activeStyle={activeItemStyle} to="/about">about</NavLink>
   </div>
 )
 
@@ -103,6 +117,20 @@ class CreateNew extends React.Component {
   }
 }
 
+const notificationStyle = {
+  color: 'green',
+  fontStyle: 'italic',
+  fontSize: 16,
+  borderStyle: 'solid',
+  borderColor: 'green',
+  borderRadius: 5,
+  borderWidth: 2,
+  padding: 10,
+  display: 'inline-block'
+
+
+}
+
 class App extends React.Component {
   constructor() {
     super()
@@ -168,7 +196,7 @@ class App extends React.Component {
               <Menu />
               <Route exact path='/' render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
               <Route exact path='/anecdotes' render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
-              {this.state.notification !== '' && <div>{this.state.notification}</div> }
+              {this.state.notification !== '' && <div style={notificationStyle}>{this.state.notification}</div> }
               <Route path='/anecdotes/:id' render={({match}) => <AnecdoteView anecdote={this.anecdoteById(match.params.id)} />} />
               <Route path='/about' render={() => <About />} />
               <Route path='/new' render={({history}) => <CreateNew addNew={this.addNew} history={history} notify={this.notify} />} />
