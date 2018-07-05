@@ -1,38 +1,66 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
-import { NavLink } from 'react-router-dom'
+import { Table, Form, FormGroup, Label, Input, Col, Button, Collapse, Navbar, NavLink, NavbarToggler, NavbarBrand, Nav, NavItem, Container, Row, Media} from 'reactstrap'
 
-const menuStyle = {
-  paddingLeft: 50,
-  paddingTop: 10,
-  paddingBottom: 10,
-  backgroundColor: '#85e0e0',
+class Menu extends React.Component {
+  constructor (props) {
+    super(props)
+    this.toggle = this.toggle.bind(this);
+    this.state = {
+      isOpen: false
+    };
+  }
+
+  toggle() {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  }
+
+  render() {
+    return(
+      <div>
+        <Navbar color="dark" dark expand='md'>
+          <NavbarBrand className='text-white'>Software Anecdotes</NavbarBrand>
+          <NavbarToggler onClick={this.toggle} />
+          <Collapse isOpen={this.state.isOpen} navbar>
+            <Nav className='ml-auto' navbar>
+              <NavItem>
+                <NavLink tag={Link} to="/anecdotes" className='text-white'>anecdotes</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to="/new" className='text-white'>add new</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to="/about" className='text-white'>about</NavLink>
+              </NavItem>
+            </Nav>
+          </Collapse>
+        </Navbar>
+      </div>
+    )
+  }
 }
-
-const activeItemStyle = {
-  backgroundColor: '#c2f0f0',
-  padding: 10,
-  paddingBottom: 11
-}
-
-const Menu = () => (
-  <div  style={menuStyle}>    
-    <NavLink activeStyle={activeItemStyle} exact to="/">anecdotes</NavLink>|
-    <NavLink activeStyle={activeItemStyle} to="/new">add new</NavLink>|
-    <NavLink activeStyle={activeItemStyle} to="/about">about</NavLink>
-  </div>
-)
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
-    <h2>Anecdotes</h2>
-    <ul>
-      {anecdotes.map(anecdote => 
-        <Link to={`/anecdotes/${anecdote.id}`} key={anecdote.id}>
-          <li key={anecdote.id} >{anecdote.content}</li>
-        </Link>
-      )}
-    </ul>  
+    <h3>List of anecdotes</h3>
+    <Table striped>
+      <tbody>
+        {anecdotes.map(anecdote =>
+          <tr key={anecdote.id} >
+            <td>
+              <Link to={`/anecdotes/${anecdote.id}`} key={anecdote.id}>
+                {anecdote.content}
+              </Link>
+            </td>
+            <td>
+              {anecdote.author}
+            </td>
+          </tr>
+        )}
+      </tbody>  
+    </Table>
   </div>
 )
 
@@ -45,25 +73,38 @@ const AnecdoteView = ({ anecdote }) => (
 )
 
 const About = () => (
-  <div>
-    <h2>About anecdote app</h2>
-    <p>According to Wikipedia:</p>
-    
-    <em>An anecdote is a brief, revealing account of an individual person or an incident. 
-      Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself, 
-      such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative. 
-      An anecdote is "a story with a point."</em>
+  <Container>
+    <Row>
+      <Col>
+        <h3>About the Anecdote app</h3>
+      </Col>
+    </Row>
+    <Row>
+      <Col>   
+        <p>According to Wikipedia:</p>
+        
+        <em>An anecdote is a brief, revealing account of an individual person or an incident. 
+          Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself, 
+          such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative. 
+          An anecdote is "a story with a point."</em>
 
-    <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
-  </div>
+        <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
+      </Col>
+      <Col md='auto'>
+        <Media object src='https://upload.wikimedia.org/wikipedia/commons/5/50/NicoBZH_-_Richard_Stallman_%28by-sa%29_%289%29.jpg' style={{width: 200}}/>
+      </Col>
+    </Row>
+  </Container>
 )
 
 const Footer = () => (
-  <h6>
-    Anecdote app made totally by me.
+  <div>
+    <h6>
+      Anecdote app made totally by me.
 
-    See <a href='https://github.com/mluukkai/routed-anecdotes'>github</a> for the source code. 
-  </h6>
+      See <a href='https://github.com/mluukkai/routed-anecdotes'>github</a> for the source code. 
+    </h6>
+  </div>
 )
 
 class CreateNew extends React.Component {
@@ -95,22 +136,33 @@ class CreateNew extends React.Component {
   render() {
     return(
       <div>
-        <h2>create a new anecdote</h2>
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            content 
-            <input name='content' value={this.state.content} onChange={this.handleChange} />
-          </div>
-          <div>
-            author
-            <input name='author' value={this.state.author} onChange={this.handleChange} />
-          </div>
-          <div>
-            url for more info
-            <input name='info' value={this.state.info} onChange={this.handleChange} />
-          </div> 
-          <button>create</button>
-        </form>
+        <div><h3>Create a new anecdote</h3></div>
+        <Form>
+          <FormGroup row>
+            <Label for='content' sm={2}>Anecdote</Label>
+            <Col sm={5}>
+              <Input type='textarea' name='content' id='content' onChange={this.handleChange}/>
+            </Col>
+          </FormGroup>
+          <FormGroup row>
+            <Label for='author' sm={2}>Author</Label>
+            <Col sm={5}>
+              <Input type='text' name='author' id='author' onChange={this.handleChange}/>
+            </Col>
+          </FormGroup>
+          <FormGroup row>
+            <Label for='url' sm={2}>Url</Label>
+            <Col sm={5}>
+              <Input type='text' name='url' id='url' onChange={this.handleChange}/>
+            </Col>
+          </FormGroup>
+          <FormGroup check row>
+            <Col sm={{ size: 10, offset: 2 }}>
+              <Button onClick={this.handleSubmit}>Submit</Button>
+            </Col>
+          </FormGroup>
+          
+        </Form>
       </div>  
     )
 
@@ -189,11 +241,10 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className='container'>
         <Router>
           <div>
-            <h1>Software anecdotes</h1>
-              <Menu />
+              <Menu /><br />
               <Route exact path='/' render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
               <Route exact path='/anecdotes' render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
               {this.state.notification !== '' && <div style={notificationStyle}>{this.state.notification}</div> }
